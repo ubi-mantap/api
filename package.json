@@ -1,0 +1,23 @@
+{
+  "name": "family-tracker-api",
+  "version": "1.0.0",
+  "description": "API for Family Tracker app, built using Node.JS and Express.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ubi-mantap/api.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ubi-mantap/api/issues"
+  },
+  "homepage": "https://github.com/ubi-mantap/api#readme",
+  "dependencies": {
+    "body-parser": "^1.14.1",
+    "express": "^4.13.3"
+  }
+}
