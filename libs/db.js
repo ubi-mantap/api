@@ -13,10 +13,10 @@ module.exports.init = function init(callback) {
       return;
     }
 
-    logger.debug('[DB] Connetion initiated.');
+    logger.info('[DB] Connection initiated.');
 
     function destroyClient() {
-      logger.debug('[DB] Destroying client...');
+      logger.info('[DB] Destroying client...');
       done();
       process.exit(0);
     }
