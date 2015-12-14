@@ -2,7 +2,12 @@
 
 const request = require('request');
 const express = require('express');
+const bodyParser = require('body-parser');
+
 const app = express();
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 app.set('port', process.env.PORT || 5000);
 
@@ -23,6 +28,12 @@ app.get('/weather-test', (req, res) => {
       city: weatherData.name
     });
   });
+});
+
+app.post('/process', (req, res) => {
+  const lat = req.body.lat;
+  const long = req.body.long;
+  res.json({ lat, long });
 });
 
 app.listen(app.get('port'), () => {
