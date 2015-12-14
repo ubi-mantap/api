@@ -20,7 +20,7 @@ module.exports = function factory(db) {
       var promise = new Promise((resolve, reject) => {
         db.query(`INSERT INTO ${TABLE_NAME} (username) VALUES ($1)`, [username], (err, result) => {
           if (err) {
-            logger.debug('[User Model] Error creating new user.', { username, err });
+            logger.error('[User Model] Error creating new user.', { username, err });
             return reject(err);
           }
 
@@ -42,7 +42,7 @@ module.exports = function factory(db) {
       var promise = new Promise((resolve, reject) => {
         db.query(`SELECT * FROM ${TABLE_NAME} WHERE username=$1`, [username], (err, result) => {
           if (err) {
-            logger.debug('[User Model] Error finding user.', { username, err });
+            logger.error('[User Model] Error finding user.', { username, err });
             return reject(err);
           }
 

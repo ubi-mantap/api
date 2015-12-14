@@ -26,7 +26,7 @@ module.exports = function factory(db) {
           [notification.type, notification.message, JSON.stringify(notification.data)],
           (err, result) => {
             if (err) {
-              logger.debug('[Notification Model] Error creating new notification.', { notification, err });
+              logger.error('[Notification Model] Error creating new notification.', { notification, err });
               return reject(err);
             }
 
@@ -49,7 +49,7 @@ module.exports = function factory(db) {
       const promise = new Promise((resolve, reject) => {
         db.query(`SELECT * FROM ${TABLE_NAME} WHERE username=$1`, [username], (err, result) => {
           if (err) {
-            logger.debug('[Notification Model] Error creating finding notification.', { username, err });
+            logger.error('[Notification Model] Error creating finding notification.', { username, err });
             return reject(err);
           }
 
@@ -71,7 +71,7 @@ module.exports = function factory(db) {
       const promise = new Promise((resolve, reject) => {
         db.query(`UPDATE ${TABLE_NAME} SET sent=true WHERE id=$1`, [notificationId], (err, result) => {
           if (err) {
-            logger.debug('[Notification Model] Error updating notification sent.', { notificationId, err });
+            logger.error('[Notification Model] Error updating notification sent.', { notificationId, err });
             return reject(err);
           }
 

@@ -29,7 +29,7 @@ module.exports = function factory(db) {
           [position.lat, position.long, position.name, position.weather, position.timestamp],
           (err, result) => {
             if (err) {
-              logger.debug('[Position Model] Error creating new position.', { position, err });
+              logger.error('[Position Model] Error creating new position.', { position, err });
               return reject(err);
             }
 
@@ -52,7 +52,7 @@ module.exports = function factory(db) {
       const promise = new Promise((resolve, reject) => {
         db.query(`SELECT * FROM ${TABLE_NAME} WHERE username=$1`, [username], (err, result) => {
           if (err) {
-            logger.debug('[Position Model] Error finding position.', { username, err });
+            logger.error('[Position Model] Error finding position.', { username, err });
             return reject(err);
           }
 
@@ -74,7 +74,7 @@ module.exports = function factory(db) {
       const promise = new Promise((resolve, reject) => {
         db.query(`SELECT * FROM ${TABLE_NAME} WHERE username=$1 LIMIT 10 ORDER BY id DESC`, [username], (err, result) => {
           if (err) {
-            logger.debug('[Position Model] Error finding last 10 position.', { username, err });
+            logger.error('[Position Model] Error finding last 10 position.', { username, err });
             return reject(err);
           }
 
