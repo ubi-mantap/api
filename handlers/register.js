@@ -11,9 +11,11 @@ module.exports = function factory(models) {
     models.User
       .new(username)
       .then(() => {
+        logger.debug('[Register Handler] Register success.');
         res.json({ ok: true });
       })
-      .catch(() => {
+      .catch(err => {
+        logger.error('[Register Handler] Register error.', err);
         res.json({ ok: false, message: 'Register failed. Try again.' });
       });
   };

@@ -13,6 +13,7 @@ module.exports = function factory(db) {
     /**
      * Create new notification
      * @param  {object}   notification            The notification
+     * @param  {string}   notification.username   The username the notification is for
      * @param  {string}   notification.type       The notification's type
      * @param  {string}   notification.message    The notification's message
      * @param  {object}   notification.data       The notification's data
@@ -22,8 +23,8 @@ module.exports = function factory(db) {
       logger.debug('[Notification Model] New', notification);
       const promise = new Promise((resolve, reject) => {
         db.query(
-          `INSERT INTO ${TABLE_NAME} (type, message, data, sent) VALUES ($1, $2, $3, false)`,
-          [notification.type, notification.message, JSON.stringify(notification.data)]
+          `INSERT INTO ${TABLE_NAME} (username, type, message, data, sent) VALUES ($1, $2, $3, $4, $5)`,
+          [notification.username, notification.type, notification.message, JSON.stringify(notification.data), false]
         )
           .then(result => {
             logger.debug('[Notification Model] Creating new notification done.');
@@ -46,7 +47,7 @@ module.exports = function factory(db) {
     find(username) {
       logger.debug('[Notification Model] Find', username);
       const promise = new Promise((resolve, reject) => {
-        db.query(`SELECT * FROM ${TABLE_NAME} WHERE username=$1`, [username])
+        db.query(`SELECT * FROM ${TABLE_NAME} WHERE username=$1 AND sent=$2`, [username, false])
           .then(result => {
             logger.debug('[Notification Model] Finding notification done.');
             resolve(result);
@@ -68,7 +69,7 @@ module.exports = function factory(db) {
     sent(notificationId) {
       logger.debug('[Notification Model] Sent', notificationId);
       const promise = new Promise((resolve, reject) => {
-        db.query(`UPDATE ${TABLE_NAME} SET sent=true WHERE id=$1`, [notificationId])
+        db.query(`UPDATE ${TABLE_NAME} SET sent=$1 WHERE id=$2`, [true, notificationId])
           .then(result => {
             logger.debug('[Notification Model] Updating notification sent done.');
             resolve(result);
