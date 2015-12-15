@@ -73,7 +73,7 @@ module.exports = function factory(db) {
     findTrackers(username) {
       logger.debug('[Tracking Model] Find Trackers', username);
       var promise = new Promise((resolve, reject) => {
-        db.query(`SELECT tracker_username FROM ${TABLE_NAME} WHERE tracked_username=$1 AND active=$2`, [username, true])
+        db.query(`SELECT id, tracker_username as username FROM ${TABLE_NAME} WHERE tracked_username=$1 AND active=$2`, [username, true])
           .then(result => {
             logger.debug('[Tracking Model] Finding trackers done.');
             resolve(result);
@@ -95,7 +95,7 @@ module.exports = function factory(db) {
     findTrackings(username) {
       logger.debug('[Tracking Model] Find Trackings', username);
       var promise = new Promise((resolve, reject) => {
-        db.query(`SELECT tracked_username FROM ${TABLE_NAME} WHERE tracker_username=$1 AND active=$2`, [username, true])
+        db.query(`SELECT id, tracked_username as username FROM ${TABLE_NAME} WHERE tracker_username=$1 AND active=$2`, [username, true])
           .then(result => {
             logger.debug('[Tracking Model] Finding trackings done.');
             resolve(result);
