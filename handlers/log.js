@@ -13,11 +13,12 @@ module.exports = function factory(models) {
     const lat = req.body.lat;
     const long = req.body.long;
 
-    let weatherAndCity, distance;
+    let weatherAndCity, distance, phone;
 
     async.parallel([
       fetchWeatherAndCity,
-      calculateDistance
+      calculateDistance,
+      getPhone
     ], (err, results) => {
       if (err) {
         logger.error('[Log Handler] Error on external API calls.', err);
@@ -27,6 +28,7 @@ module.exports = function factory(models) {
       logger.debug('[Log Handler] External API calls success.', results);
       weatherAndCity = results[0];
       distance = results[1];
+      phone = results[2];
 
       async.parallel([
         createPosition,
@@ -70,6 +72,18 @@ module.exports = function factory(models) {
       callback(null, distance);
     }
 
+    function getPhone(callback) {
+      logger.debug(`[Log Handler] Getting phone number of user...`);
+      models.User.find(username)
+        .then(result => {
+          callback(null, result[0].phone);
+        })
+        .catch(err => {
+          logger.error('[Log Handler] Getting phone number failed.', err);
+          callback(err);
+        });
+    }
+
     function createPosition(callback) {
       models.Position.new({ username, lat, long, name: weatherAndCity.city, weather: weatherAndCity.weather })
         .then(() => {
@@ -90,7 +104,7 @@ module.exports = function factory(models) {
               username: tracker.username,
               type: 'update',
               message: `Update: ${username} is on ${weatherAndCity.city} (${weatherAndCity.weather}).`,
-              data: {}
+              data: { phone }
             };
 
             models.Notification.new(notification)

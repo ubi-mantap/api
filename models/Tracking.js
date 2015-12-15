@@ -65,7 +65,7 @@ module.exports = function factory(db) {
     },
 
     /**
-     * Create new user
+     * Set active status of a tracking
      * @param  {object}   tracking                   The tracking details
      * @param  {string}   tracking.trackerUsername   The tracking's tracker username
      * @param  {string}   tracking.trackedUsername   The tracking's tracked username
