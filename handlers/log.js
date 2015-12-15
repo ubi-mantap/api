@@ -83,29 +83,28 @@ module.exports = function factory(models) {
     }
 
     function createNotification(callback) {
-      callback();
-    //   models.User.findTrackers(username)
-    //     .then(result => {
-    //       result.forEach(tracker => {
-    //         const notification = {
-    //           username: tracker.username,
-    //           type: 'update',
-    //           message: `Update: ${username} is on ${weatherAndCity.city} (${weatherAndCity.weather}).`,
-    //           data: {}
-    //         };
+      models.Tracking.findTrackers(username)
+        .then(result => {
+          result.forEach(tracker => {
+            const notification = {
+              username: tracker.username,
+              type: 'update',
+              message: `Update: ${username} is on ${weatherAndCity.city} (${weatherAndCity.weather}).`,
+              data: {}
+            };
 
-    //         models.Notification.new(notification)
-    //           .catch(err => {
-    //             logger.error(`[Log Handler] Create notification for ${tracker.username} failed.`, err);
-    //           });
-    //       });
+            models.Notification.new(notification)
+              .catch(err => {
+                logger.error(`[Log Handler] Create notification for ${tracker.username} failed.`, err);
+              });
+          });
 
-    //       callback(null);
-    //     })
-    //     .catch(err => {
-    //       logger.error('[Log Handler] Error on creating notifications');
-    //       callback(err);
-    //     });
+          callback();
+        })
+        .catch(err => {
+          logger.error('[Log Handler] Error on creating notifications');
+          callback(err);
+        });
     }
   };
 };
