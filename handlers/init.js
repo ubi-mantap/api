@@ -1,29 +1,46 @@
 'use strict';
 
+const async = require('async');
 const logger = require('../libs/logger');
 
 module.exports = function factory(models) {
   return function init(req, res) {
     logger.debug('[Init Handler] Got request.', req.body);
 
-    const notification = {
-      username: req.body.trackedUsername,
-      type: 'trackRequest',
-      message: `You have a new tracking request from ${req.body.trackerUsername}.`,
-      data: {
-        trackerUsername: req.body.trackerUsername,
-        trackedUsername: req.body.trackedUsername
-      }
-    };
+    const trackerUsername = req.body.trackerUsername;
+    const trackedUsername = req.body.trackedUsername;
 
-    models.Notification.new(notification)
-      .then(() => {
-        logger.debug('[Init Handler] Init success.');
-        res.json({ ok: true });
-      })
-      .catch(err => {
+    async.parallel([
+      createNotification,
+      createTracking
+    ], (err, results) => {
+      if (err) {
         logger.error('[Init Handler] Init error.', err);
-        res.json({ ok: false, message: 'Init failed. Try again.' });
-      });
+        return res.json({ ok: false, message: 'Init failed. Try again.' });
+      }
+
+      logger.debug('[Init Handler] Init success.', results);
+      res.json({ ok: true });
+    });
+
+    function createNotification(callback) {
+      const notification = {
+        username: trackedUsername,
+        type: 'trackRequest',
+        message: `You have a new tracking request from ${trackerUsername}.`,
+        data: { trackerUsername, trackedUsername }
+      };
+
+      models.Notification.new(notification)
+        .then(callback.bind(null, null))
+        .catch(callback);
+    }
+
+    function createTracking(callback) {
+      const tracking = { trackerUsername, trackedUsername };
+      models.Tracking.new(tracking)
+        .then(callback.bind(null, null))
+        .catch(callback);
+    }
   };
 };
