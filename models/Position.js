@@ -16,17 +16,16 @@ module.exports = function factory(db) {
      * @param  {string}   position.username     The position's owner username
      * @param  {string}   position.lat          The position's latitude
      * @param  {string}   position.long         The position's longitude
-     * @param  {object}   position.name         The position's city name
-     * @param  {object}   position.weather      The position's weather
-     * @param  {object}   position.timestamp    The position's timestamp
+     * @param  {string}   position.name         The position's city name
+     * @param  {string}   position.weather      The position's weather
      * @return {Promise}                        The promise
      */
     new(position) {
       logger.debug('[Position Model] New', position);
       const promise = new Promise((resolve, reject) => {
         db.query(
-          `INSERT INTO ${TABLE_NAME} (lat, long, name, weather, timestamp) VALUES ($1, $2, $3, $4, $5)`,
-          [position.lat, position.long, position.name, position.weather, position.timestamp]
+          `INSERT INTO ${TABLE_NAME} (username, lat, long, name, weather) VALUES ($1, $2, $3, $4, $5)`,
+          [position.username, position.lat, position.long, position.name, position.weather]
         )
           .then(result => {
             logger.debug('[Position Model] Done creating new position.');
