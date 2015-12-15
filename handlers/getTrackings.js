@@ -26,17 +26,25 @@ module.exports = function factory(models) {
     logger.debug(`[GetTrackings Handler] Getting last position for ${user.username}`);
     models.Position.findLast(user.username)
       .then(result => {
-        result = result[0];
-        const detail = {
-          username: result.username,
-          location: {
-            lat: result.lat,
-            long: result.long,
-            name: result.name
-          },
-          weather: result.weather,
-          timestamp: result.timestamp
-        };
+        let detail;
+
+        if (result.length) {
+          result = result[0];
+          detail = {
+            username: result.username,
+            location: {
+              lat: result.lat,
+              long: result.long,
+              name: result.name
+            },
+            weather: result.weather,
+            timestamp: result.timestamp
+          };
+        } else {
+          detail = {
+            username: user.username
+          };
+        }
 
         callback(null, detail);
       })
