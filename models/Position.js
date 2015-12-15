@@ -63,6 +63,28 @@ module.exports = function factory(db) {
     },
 
     /**
+     * Find last position for a username
+     * @param  {string}   username  The username
+     * @return {Promise}            The promise
+     */
+    findLast(username) {
+      logger.debug('[Position Model] Find Last', username);
+      const promise = new Promise((resolve, reject) => {
+        db.query(`SELECT * FROM ${TABLE_NAME} WHERE username=$1 ORDER BY id DESC LIMIT 1`, [username])
+          .then(result => {
+            logger.debug('[Position Model] Done finding last position.');
+            resolve(result);
+          })
+          .catch(err => {
+            logger.error('[Position Model] Error finding last position.', { username, err });
+            reject(err);
+          });
+      });
+
+      return promise;
+    },
+
+    /**
      * Find last 10 positions for a username
      * @param  {string}   username  The username
      * @return {Promise}            The promise
@@ -70,7 +92,7 @@ module.exports = function factory(db) {
     findLast10(username) {
       logger.debug('[Position Model] Find Last 10', username);
       const promise = new Promise((resolve, reject) => {
-        db.query(`SELECT * FROM ${TABLE_NAME} WHERE username=$1 LIMIT 10 ORDER BY id DESC`, [username])
+        db.query(`SELECT * FROM ${TABLE_NAME} WHERE username=$1 ORDER BY id DESC LIMIT 10`, [username])
           .then(result => {
             logger.debug('[Position Model] Done finding last 10 position.');
             resolve(result);
