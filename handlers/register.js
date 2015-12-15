@@ -6,10 +6,13 @@ module.exports = function factory(models) {
   return function register(req, res) {
     logger.debug('[Register Handler] Got request.', req.body);
 
-    const username = req.body.username;
+    const user = {
+      username: req.body.username,
+      phone: req.body.phone
+    };
 
     models.User
-      .new(username)
+      .new(user)
       .then(() => {
         logger.debug('[Register Handler] Register success.');
         res.json({ ok: true });

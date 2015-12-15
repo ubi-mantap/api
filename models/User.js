@@ -12,19 +12,21 @@ module.exports = function factory(db) {
 
     /**
      * Create new user
-     * @param  {string}   username  The username
-     * @return {Promise}            The promise
+     * @param  {object}   user            The new user
+     * @param  {string}   user.username   The username
+     * @param  {string}   user.phone      The phone
+     * @return {Promise}                  The promise
      */
-    new(username) {
-      logger.debug('[User Model] New', username);
+    new(user) {
+      logger.debug('[User Model] New', user);
       var promise = new Promise((resolve, reject) => {
-        db.query(`INSERT INTO ${TABLE_NAME} (username) VALUES ($1)`, [username])
+        db.query(`INSERT INTO ${TABLE_NAME} (username, phone) VALUES ($1, $2)`, [user.username, user.phone])
           .then(result => {
             logger.debug('[User Model] Creating new user done.');
             resolve(result);
           })
           .catch(err => {
-            logger.error('[User Model] Error creating new user.', { username, err });
+            logger.error('[User Model] Error creating new user.', { user, err });
             reject(err);
           });
       });
