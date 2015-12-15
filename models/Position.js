@@ -26,17 +26,16 @@ module.exports = function factory(db) {
       const promise = new Promise((resolve, reject) => {
         db.query(
           `INSERT INTO ${TABLE_NAME} (lat, long, name, weather, timestamp) VALUES ($1, $2, $3, $4, $5)`,
-          [position.lat, position.long, position.name, position.weather, position.timestamp],
-          (err, result) => {
-            if (err) {
-              logger.error('[Position Model] Error creating new position.', { position, err });
-              return reject(err);
-            }
-
+          [position.lat, position.long, position.name, position.weather, position.timestamp]
+        )
+          .then(result => {
             logger.debug('[Position Model] Done creating new position.');
             resolve(result);
-          }
-        );
+          })
+          .catch(err => {
+            logger.error('[Position Model] Error creating new position.', { position, err });
+            reject(err);
+          });
       });
 
       return promise;
@@ -50,15 +49,15 @@ module.exports = function factory(db) {
     find(username) {
       logger.debug('[Position Model] Find', username);
       const promise = new Promise((resolve, reject) => {
-        db.query(`SELECT * FROM ${TABLE_NAME} WHERE username=$1`, [username], (err, result) => {
-          if (err) {
+        db.query(`SELECT * FROM ${TABLE_NAME} WHERE username=$1`, [username])
+          .then(result => {
+            logger.debug('[Position Model] Done finding position.');
+            resolve(result);
+          })
+          .catch(err => {
             logger.error('[Position Model] Error finding position.', { username, err });
-            return reject(err);
-          }
-
-          logger.debug('[Position Model] Done finding position.');
-          resolve(result);
-        });
+            reject(err);
+          });
       });
 
       return promise;
@@ -72,15 +71,15 @@ module.exports = function factory(db) {
     findLast10(username) {
       logger.debug('[Position Model] Find Last 10', username);
       const promise = new Promise((resolve, reject) => {
-        db.query(`SELECT * FROM ${TABLE_NAME} WHERE username=$1 LIMIT 10 ORDER BY id DESC`, [username], (err, result) => {
-          if (err) {
+        db.query(`SELECT * FROM ${TABLE_NAME} WHERE username=$1 LIMIT 10 ORDER BY id DESC`, [username])
+          .then(result => {
+            logger.debug('[Position Model] Done finding last 10 position.');
+            resolve(result);
+          })
+          .catch(err => {
             logger.error('[Position Model] Error finding last 10 position.', { username, err });
-            return reject(err);
-          }
-
-          logger.debug('[Position Model] Done finding last 10 position.');
-          resolve(result);
-        });
+            reject(err);
+          });
       });
 
       return promise;

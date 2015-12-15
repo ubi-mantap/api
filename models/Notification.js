@@ -23,17 +23,16 @@ module.exports = function factory(db) {
       const promise = new Promise((resolve, reject) => {
         db.query(
           `INSERT INTO ${TABLE_NAME} (type, message, data, sent) VALUES ($1, $2, $3, false)`,
-          [notification.type, notification.message, JSON.stringify(notification.data)],
-          (err, result) => {
-            if (err) {
-              logger.error('[Notification Model] Error creating new notification.', { notification, err });
-              return reject(err);
-            }
-
+          [notification.type, notification.message, JSON.stringify(notification.data)]
+        )
+          .then(result => {
             logger.debug('[Notification Model] Creating new notification done.');
             resolve(result);
-          }
-        );
+          })
+          .catch(err => {
+            logger.error('[Notification Model] Error creating new notification.', { notification, err });
+            reject(err);
+          });
       });
 
       return promise;
@@ -47,15 +46,15 @@ module.exports = function factory(db) {
     find(username) {
       logger.debug('[Notification Model] Find', username);
       const promise = new Promise((resolve, reject) => {
-        db.query(`SELECT * FROM ${TABLE_NAME} WHERE username=$1`, [username], (err, result) => {
-          if (err) {
+        db.query(`SELECT * FROM ${TABLE_NAME} WHERE username=$1`, [username])
+          .then(result => {
+            logger.debug('[Notification Model] Finding notification done.');
+            resolve(result);
+          })
+          .catch(err => {
             logger.error('[Notification Model] Error creating finding notification.', { username, err });
-            return reject(err);
-          }
-
-          logger.debug('[Notification Model] Finding notification done.');
-          resolve(result);
-        });
+            reject(err);
+          });
       });
 
       return promise;
@@ -69,15 +68,15 @@ module.exports = function factory(db) {
     sent(notificationId) {
       logger.debug('[Notification Model] Sent', notificationId);
       const promise = new Promise((resolve, reject) => {
-        db.query(`UPDATE ${TABLE_NAME} SET sent=true WHERE id=$1`, [notificationId], (err, result) => {
-          if (err) {
+        db.query(`UPDATE ${TABLE_NAME} SET sent=true WHERE id=$1`, [notificationId])
+          .then(result => {
+            logger.debug('[Notification Model] Updating notification sent done.');
+            resolve(result);
+          })
+          .catch(err => {
             logger.error('[Notification Model] Error updating notification sent.', { notificationId, err });
-            return reject(err);
-          }
-
-          logger.debug('[Notification Model] Updating notification sent done.');
-          resolve(result);
-        });
+            reject(err);
+          });
       });
 
       return promise;

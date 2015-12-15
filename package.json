@@ -20,7 +20,7 @@
     "async": "^1.5.0",
     "body-parser": "^1.14.1",
     "express": "^4.13.3",
-    "pg": "^4.4.3",
+    "pg-promise": "^2.7.4",
     "request": "^2.67.0",
     "winston": "^2.1.1"
   }
