@@ -40,14 +40,14 @@ module.exports = function factory(db) {
     },
 
     /**
-     * Find notification for a username
+     * Find unsent notifications for a username
      * @param  {string}   username  The username
      * @return {Promise}            The promise
      */
-    find(username) {
-      logger.debug('[Notification Model] Find', username);
+    findUnsent(username) {
+      logger.debug('[Notification Model] Find Unsent', username);
       const promise = new Promise((resolve, reject) => {
-        db.query(`SELECT * FROM ${TABLE_NAME} WHERE username=$1 AND sent=$2`, [username, false])
+        db.query(`SELECT id, type, message, data FROM ${TABLE_NAME} WHERE username=$1 AND sent=$2`, [username, false])
           .then(result => {
             logger.debug('[Notification Model] Finding notification done.');
             resolve(result);
