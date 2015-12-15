@@ -11,10 +11,10 @@ module.exports = function factory(db) {
   const Tracking = {
 
     /**
-     * Create new user
+     * Create new tracking
      * @param  {object}   tracking                   The tracking details
-     * @param  {string}   tracking.trackerUsername   The tracking details
-     * @param  {string}   tracking.trackedUsername   The tracking details
+     * @param  {string}   tracking.trackerUsername   The tracking's tracker username
+     * @param  {string}   tracking.trackedUsername   The tracking's tracked username
      * @return {Promise}                             The promise
      */
     new(tracking) {
@@ -38,10 +38,37 @@ module.exports = function factory(db) {
     },
 
     /**
+     * Delete tracking
+     * @param  {object}   tracking                   The tracking details
+     * @param  {string}   tracking.trackerUsername   The tracking's tracker username
+     * @param  {string}   tracking.trackedUsername   The tracking's tracked username
+     * @return {Promise}                             The promise
+     */
+    delete(tracking) {
+      logger.debug('[Tracking Model] Delete', tracking);
+      var promise = new Promise((resolve, reject) => {
+        db.query(
+          `DELETE FROM ${TABLE_NAME} WHERE tracker_username=$1 AND tracked_username=$2`,
+          [tracking.trackerUsername, tracking.trackedUsername]
+        )
+          .then(result => {
+            logger.debug('[Tracking Model] Delete tracking done.');
+            resolve(result);
+          })
+          .catch(err => {
+            logger.error('[Tracking Model] Error deleting tracking.', { tracking, err });
+            reject(err);
+          });
+      });
+
+      return promise;
+    },
+
+    /**
      * Create new user
      * @param  {object}   tracking                   The tracking details
-     * @param  {string}   tracking.trackerUsername   The tracking details
-     * @param  {string}   tracking.trackedUsername   The tracking details
+     * @param  {string}   tracking.trackerUsername   The tracking's tracker username
+     * @param  {string}   tracking.trackedUsername   The tracking's tracked username
      * @param  {boolean}  active                     Active status
      * @return {Promise}                             The promise
      */
