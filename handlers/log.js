@@ -64,12 +64,32 @@ module.exports = function factory(models) {
 
     function calculateDistance(callback) {
       logger.debug('[Log Handler] Calculating distance...');
+      const distanceCalculatorUrl = `https://ft-distance-calculator.herokuapp.com`;
+      models.Position.findLast10(username)
+        .then(result => {
+          request({
+            url: distanceCalculatorUrl,
+            method: 'POST',
+            json: {
+              current: { X: Number(lat), Y: Number(long) },
+              previous: result.map(pos => {
+                return { X: Number(pos.lat), Y: Number(pos.long) };
+              })
+            }
+          }, (err, response, body) => {
+            if (err) {
+              logger.error('[Log Handler] Error fetching calculation result', err);
+              return callback(err);
+            }
 
-      // TODO: implement
-      distance = 0;
-
-      logger.debug('[Log Handler] Calculating distance success.');
-      callback(null, distance);
+            logger.debug('[Log Handler] Fetching calculation result done.', body);
+            callback(null, body.CurrDistance);
+          });
+        })
+        .catch(err => {
+          logger.error('[Log Handler] Error finding last 10 position.', err);
+          callback(err);
+        });
     }
 
     function getPhone(callback) {
@@ -100,10 +120,12 @@ module.exports = function factory(models) {
       models.Tracking.findTrackers(username)
         .then(result => {
           result.forEach(tracker => {
+            let message = `Update: ${username} is on ${weatherAndCity.city} (${weatherAndCity.weather}).`;
+            // TODO: append message with danger distance treshold.
             const notification = {
               username: tracker.username,
               type: 'update',
-              message: `Update: ${username} is on ${weatherAndCity.city} (${weatherAndCity.weather}).`,
+              message,
               data: { phone }
             };
 

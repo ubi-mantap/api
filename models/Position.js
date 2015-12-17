@@ -92,7 +92,7 @@ module.exports = function factory(db) {
     findLast10(username) {
       logger.debug('[Position Model] Find Last 10', username);
       const promise = new Promise((resolve, reject) => {
-        db.query(`SELECT * FROM ${TABLE_NAME} WHERE username=$1 ORDER BY id DESC LIMIT 10`, [username])
+        db.query(`SELECT lat, long FROM ${TABLE_NAME} WHERE username=$1 ORDER BY id DESC LIMIT 10`, [username])
           .then(result => {
             logger.debug('[Position Model] Done finding last 10 position.');
             resolve(result);
