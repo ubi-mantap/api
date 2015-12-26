@@ -67,24 +67,30 @@ module.exports = function factory(models) {
       const distanceCalculatorUrl = `https://ft-distance-calculator.herokuapp.com`;
       models.Position.findLast10(username)
         .then(result => {
-          request({
-            url: distanceCalculatorUrl,
-            method: 'POST',
-            json: {
-              current: { X: Number(lat), Y: Number(long) },
-              previous: result.map(pos => {
-                return { X: Number(pos.lat), Y: Number(pos.long) };
-              })
-            }
-          }, (err, response, body) => {
-            if (err) {
-              logger.error('[Log Handler] Error fetching calculation result', err);
-              return callback(err);
-            }
+          if (result.length > 0) {
+            logger.debug('[Log Handler] Last 10 positions exists, proceeding...');
+            request({
+              url: distanceCalculatorUrl,
+              method: 'POST',
+              json: {
+                current: { Lat: Number(lat), Lon: Number(long) },
+                previous: result.map(pos => {
+                  return { Lat: Number(pos.lat), Lon: Number(pos.long) };
+                })
+              }
+            }, (err, response, body) => {
+              if (err) {
+                logger.error('[Log Handler] Error fetching calculation result', err);
+                return callback(err);
+              }
 
-            logger.debug('[Log Handler] Fetching calculation result done.', body);
-            callback(null, body.CurrDistance);
-          });
+              logger.debug('[Log Handler] Fetching calculation result done.', body);
+              callback(null, body.CurrDistance);
+            });
+          } else {
+            logger.debug('[Log Handler] No last 10 positions. Returning 0.');
+            callback(null, 0);
+          }
         })
         .catch(err => {
           logger.error('[Log Handler] Error finding last 10 position.', err);
@@ -121,7 +127,9 @@ module.exports = function factory(models) {
         .then(result => {
           result.forEach(tracker => {
             let message = `Update: ${username} is on ${weatherAndCity.city} (${weatherAndCity.weather}).`;
-            // TODO: append message with danger distance treshold.
+            if (distance > 1) {
+              message += ` Detecting unusual behavior (${distance} KM away from usual). What would you do?`;
+            }
             const notification = {
               username: tracker.username,
               type: 'update',
