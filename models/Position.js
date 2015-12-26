@@ -92,7 +92,21 @@ module.exports = function factory(db) {
     findLast10(username) {
       logger.debug('[Position Model] Find Last 10', username);
       const promise = new Promise((resolve, reject) => {
-        db.query(`SELECT lat, long FROM ${TABLE_NAME} WHERE username=$1 ORDER BY id DESC LIMIT 10`, [username])
+        db.query(`SELECT lat, long FROM ${TABLE_NAME}
+                  WHERE username=$1
+                  AND (
+                    (timestamp BETWEEN now() - interval '7 days 00:05:00' AND now() - interval '7 days -00:05:00')
+                    OR (timestamp BETWEEN now() - interval '14 days 00:05:00' AND now() - interval '14 days -00:05:00')
+                    OR (timestamp BETWEEN now() - interval '21 days 00:05:00' AND now() - interval '21 days -00:05:00')
+                    OR (timestamp BETWEEN now() - interval '28 days 00:05:00' AND now() - interval '28 days -00:05:00')
+                    OR (timestamp BETWEEN now() - interval '35 days 00:05:00' AND now() - interval '35 days -00:05:00')
+                    OR (timestamp BETWEEN now() - interval '42 days 00:05:00' AND now() - interval '42 days -00:05:00')
+                    OR (timestamp BETWEEN now() - interval '49 days 00:05:00' AND now() - interval '49 days -00:05:00')
+                    OR (timestamp BETWEEN now() - interval '56 days 00:05:00' AND now() - interval '56 days -00:05:00')
+                    OR (timestamp BETWEEN now() - interval '63 days 00:05:00' AND now() - interval '63 days -00:05:00')
+                    OR (timestamp BETWEEN now() - interval '70 days 00:05:00' AND now() - interval '70 days -00:05:00')
+                  )
+                  ORDER BY id DESC LIMIT 10`, [username])
           .then(result => {
             logger.debug('[Position Model] Done finding last 10 position.');
             resolve(result);
