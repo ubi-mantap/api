@@ -49,7 +49,7 @@ module.exports = function factory(models) {
 
     function fetchWeatherAndCity(callback) {
       logger.debug('[Log Handler] Fetching weather and city...');
-      const weatherApiUrl = `http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&appid=${WEATHER_API_KEY}`;
+      const weatherApiUrl = `http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&units=metric&appid=${WEATHER_API_KEY}`;
       request(weatherApiUrl, (err, response, body) => {
         if (err) {
           logger.error('[Log Handler] Error fetching weather and city.', err);
@@ -60,6 +60,7 @@ module.exports = function factory(models) {
         const weatherData = JSON.parse(body);
         callback(null, {
           weather: weatherData.weather[0].main,
+          temperature: weatherData.main.temp,
           city: weatherData.name
         });
       });
@@ -130,9 +131,9 @@ module.exports = function factory(models) {
       models.Tracking.findTrackers(username)
         .then(result => {
           result.forEach(tracker => {
-            let message = `Update: ${username} is on ${weatherAndCity.city} (${weatherAndCity.weather}).`;
+            let message = `Update: ${username} is on ${weatherAndCity.city}, ${weatherAndCity.temperature}\u2103, ${weatherAndCity.weather}.`;
             if (distance > 1) {
-              message += ` Detecting unusual behavior (${distance} KM away from usual). What would you do?`;
+              message += ` Detecting unusual place (${distance} KM away from usual). What would you do?`;
             }
             const notification = {
               username: tracker.username,

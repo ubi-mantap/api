@@ -27,7 +27,7 @@ module.exports = function factory(models) {
       const notification = {
         username: trackedUsername,
         type: 'trackRequest',
-        message: `You have a new tracking request from ${trackerUsername}.`,
+        message: `${trackerUsername} wants to track you.`,
         data: { trackerUsername, trackedUsername }
       };
 
