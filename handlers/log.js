@@ -88,7 +88,8 @@ module.exports = function factory(models) {
               }
 
               logger.debug('[Log Handler] Fetching calculation result done.', body);
-              callback(null, body.CurrDistance);
+              let dist = Math.round(body.CurrDistance * 100)/100;
+              callback(null, dist);
             });
           } else {
             logger.debug('[Log Handler] No last 10 positions. Returning 0.');
