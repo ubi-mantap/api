@@ -12,8 +12,11 @@ module.exports = function factory(models) {
     const username = req.body.username;
     const lat = req.body.lat;
     const long = req.body.long;
+    let weatherAndCity, distance, phone, timestamp;
 
-    let weatherAndCity, distance, phone;
+    // Override timestamp if present
+    if (req.body.timestamp)
+      timestamp = req.body.timestamp;
 
     async.parallel([
       fetchWeatherAndCity,
@@ -65,7 +68,7 @@ module.exports = function factory(models) {
     function calculateDistance(callback) {
       logger.debug('[Log Handler] Calculating distance...');
       const distanceCalculatorUrl = `https://ft-distance-calculator.herokuapp.com`;
-      models.Position.findLast10(username)
+      models.Position.findLast10(username, timestamp)
         .then(result => {
           if (result.length > 0) {
             logger.debug('[Log Handler] Last 10 positions exists, proceeding...');
@@ -111,7 +114,7 @@ module.exports = function factory(models) {
     }
 
     function createPosition(callback) {
-      models.Position.new({ username, lat, long, name: weatherAndCity.city, weather: weatherAndCity.weather })
+      models.Position.new({ username, lat, long, name: weatherAndCity.city, weather: weatherAndCity.weather, timestamp })
         .then(() => {
           logger.debug('[Log Handler] Create position success.');
           callback();
