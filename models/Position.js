@@ -99,26 +99,26 @@ module.exports = function factory(db) {
         db.query(`SELECT lat, long FROM ${TABLE_NAME}
                   WHERE username=$1
                   AND (
-                       (timestamp BETWEEN timestamp '${timestamp}' - interval '7 days 00:05:00'
-                                      AND timestamp '${timestamp}' - interval '7 days -00:05:00')
-                    OR (timestamp BETWEEN timestamp '${timestamp}' - interval '14 days 00:05:00'
-                                      AND timestamp '${timestamp}' - interval '14 days -00:05:00')
-                    OR (timestamp BETWEEN timestamp '${timestamp}' - interval '21 days 00:05:00'
-                                      AND timestamp '${timestamp}' - interval '21 days -00:05:00')
-                    OR (timestamp BETWEEN timestamp '${timestamp}' - interval '28 days 00:05:00'
-                                      AND timestamp '${timestamp}' - interval '28 days -00:05:00')
-                    OR (timestamp BETWEEN timestamp '${timestamp}' - interval '35 days 00:05:00'
-                                      AND timestamp '${timestamp}' - interval '35 days -00:05:00')
-                    OR (timestamp BETWEEN timestamp '${timestamp}' - interval '42 days 00:05:00'
-                                      AND timestamp '${timestamp}' - interval '42 days -00:05:00')
-                    OR (timestamp BETWEEN timestamp '${timestamp}' - interval '49 days 00:05:00'
-                                      AND timestamp '${timestamp}' - interval '49 days -00:05:00')
-                    OR (timestamp BETWEEN timestamp '${timestamp}' - interval '56 days 00:05:00'
-                                      AND timestamp '${timestamp}' - interval '56 days -00:05:00')
-                    OR (timestamp BETWEEN timestamp '${timestamp}' - interval '63 days 00:05:00'
-                                      AND timestamp '${timestamp}' - interval '63 days -00:05:00')
-                    OR (timestamp BETWEEN timestamp '${timestamp}' - interval '70 days 00:05:00'
-                                      AND timestamp '${timestamp}' - interval '70 days -00:05:00')
+                       (timestamp BETWEEN timestamp '${timestamp}' - interval '1 week 00:05:00'
+                                      AND timestamp '${timestamp}' - interval '1 week -00:05:00')
+                    OR (timestamp BETWEEN timestamp '${timestamp}' - interval '2 weeks 00:05:00'
+                                      AND timestamp '${timestamp}' - interval '2 weeks -00:05:00')
+                    OR (timestamp BETWEEN timestamp '${timestamp}' - interval '3 weeks 00:05:00'
+                                      AND timestamp '${timestamp}' - interval '3 weeks -00:05:00')
+                    OR (timestamp BETWEEN timestamp '${timestamp}' - interval '4 weeks 00:05:00'
+                                      AND timestamp '${timestamp}' - interval '4 weeks -00:05:00')
+                    OR (timestamp BETWEEN timestamp '${timestamp}' - interval '5 weeks 00:05:00'
+                                      AND timestamp '${timestamp}' - interval '5 weeks -00:05:00')
+                    OR (timestamp BETWEEN timestamp '${timestamp}' - interval '6 weeks 00:05:00'
+                                      AND timestamp '${timestamp}' - interval '6 weeks -00:05:00')
+                    OR (timestamp BETWEEN timestamp '${timestamp}' - interval '7 weeks 00:05:00'
+                                      AND timestamp '${timestamp}' - interval '7 weeks -00:05:00')
+                    OR (timestamp BETWEEN timestamp '${timestamp}' - interval '8 weeks 00:05:00'
+                                      AND timestamp '${timestamp}' - interval '8 weeks -00:05:00')
+                    OR (timestamp BETWEEN timestamp '${timestamp}' - interval '9 weeks 00:05:00'
+                                      AND timestamp '${timestamp}' - interval '9 weeks -00:05:00')
+                    OR (timestamp BETWEEN timestamp '${timestamp}' - interval '10 weeks 00:05:00'
+                                      AND timestamp '${timestamp}' - interval '10 weeks -00:05:00')
                   )
                   ORDER BY id DESC LIMIT 10`, [username])
           .then(result => {
